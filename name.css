@@ -1,0 +1,53 @@
+/* 
+
+  This CSS code will make your website responsive, so it will look good on all screen sizes.
+
+*/
+
+/* Set the viewport to 100% width */
+
+html, body {
+
+  width: 100%;
+
+  margin: 0;
+
+  padding: 0;
+
+}
+
+/* 
+
+  This media query will apply the following CSS to screens that are less than 768px wide.
+
+*/
+
+@media screen and (max-width: 768px) {
+
+  /* 
+
+    Set the main content to 100% width and center it on the page.
+
+  */
+
+  main {
+
+    width: 100%;
+
+    margin: 0 auto;
+
+  }
+
+  /* 
+
+    Hide the sidebar on mobile devices.
+
+  */
+
+  .sidebar {
+
+    display: none;
+
+  }
+
+}
