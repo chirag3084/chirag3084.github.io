@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chirag Surti — Backend Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B0F14;
+    --surface: #111820;
+    --surface-2: #161F29;
+    --line: #22303C;
+    --text: #E7EEF3;
+    --muted: #7C8A97;
+    --accent: #4FD1C5;
+    --accent-dim: #2E5F5A;
+    --amber: #E3B341;
+    --red: #E36A5C;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Manrope', sans-serif;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  ::selection{ background:var(--accent); color:#0B0F14; }
+
+  a{ color:inherit; text-decoration:none; }
+
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* ---------- background grid texture ---------- */
+  .bg-grid{
+    position:fixed;
+    inset:0;
+    background-image:
+      linear-gradient(rgba(79,209,197,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,209,197,0.035) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events:none;
+    z-index:0;
+    mask-image: radial-gradient(circle at 50% 0%, black 0%, transparent 70%);
+  }
+
+  /* ---------- nav ---------- */
+  nav{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(11,15,20,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    height:60px;
+  }
+  .nav-brand{
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:14px;
+    color:var(--accent);
+    letter-spacing:0.02em;
+  }
+  .nav-brand span{ color:var(--muted); }
+  .nav-links{
+    display:flex;
+    gap:26px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--muted);
+  }
+  .nav-links a{ transition:color .15s ease; }
+  .nav-links a:hover{ color:var(--accent); }
+  .nav-links a::before{ content:'/'; color:var(--line); margin-right:4px; }
+
+  /* ---------- hero / terminal ---------- */
+  header.hero{
+    padding:88px 0 64px;
+    position:relative;
+    z-index:1;
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--amber);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    margin-bottom:18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 0 3px rgba(227,179,65,0.15);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:1; } 50%{ opacity:0.4; }
+  }
+
+  .terminal{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 30px 60px -30px rgba(0,0,0,0.6);
+  }
+  .term-bar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:12px 16px;
+    background:var(--surface-2);
+    border-bottom:1px solid var(--line);
+  }
+  .term-bar .tdot{ width:10px; height:10px; border-radius:50%; }
+  .tdot.r{ background:#E36A5C; }
+  .tdot.y{ background:#E3B341; }
+  .tdot.g{ background:#4FD1C5; }
+  .term-title{
+    margin-left:8px;
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--muted);
+  }
+  .term-body{
+    padding:26px 24px 30px;
+    font-family:var(--mono);
+    font-size:14px;
+  }
+  .term-body .req{ color:var(--muted); margin-bottom:14px; }
+  .term-body .req .method{ color:var(--accent); font-weight:700; }
+  pre.json{
+    white-space:pre-wrap;
+    word-break:break-word;
+    color:#B8C4CC;
+    font-size:13.5px;
+    line-height:1.85;
+  }
+  pre.json .key{ color:var(--accent); }
+  pre.json .str{ color:#C9B37E; }
+  pre.json .punc{ color:var(--muted); }
+  pre.json .num{ color:var(--amber); }
+  .cursor{
+    display:inline-block;
+    width:8px; height:16px;
+    background:var(--accent);
+    vertical-align:text-bottom;
+    animation:blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .hero-cta{
+    display:flex;
+    gap:12px;
+    margin-top:22px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    font-family:var(--mono);
+    font-size:12.5px;
+    padding:10px 16px;
+    border-radius:6px;
+    border:1px solid var(--line);
+    color:var(--text);
+    transition:all .15s ease;
+  }
+  .btn:hover{ border-color:var(--accent); color:var(--accent); transform:translateY(-1px); }
+  .btn.primary{
+    background:var(--accent);
+    color:#08201D;
+    border-color:var(--accent);
+    font-weight:700;
+  }
+  .btn.primary:hover{ color:#08201D; opacity:0.9; }
+
+  /* ---------- sections ---------- */
+  section{
+    padding:64px 0;
+    border-top:1px solid var(--line);
+    position:relative;
+    z-index:1;
+  }
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:34px;
+  }
+  .sec-route{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--muted);
+    padding:3px 9px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    white-space:nowrap;
+  }
+  .sec-title{
+    font-family:var(--sans);
+    font-size:26px;
+    font-weight:800;
+    letter-spacing:-0.01em;
+  }
+
+  /* about */
+  .about-text{
+    max-width:620px;
+    color:#B8C4CC;
+    font-size:16px;
+  }
+  .about-text strong{ color:var(--text); font-weight:700; }
+
+  /* skills as config */
+  .config{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:22px 24px;
+    font-family:var(--mono);
+    font-size:13.5px;
+  }
+  .config .row{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    padding:9px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .config .row:last-child{ border-bottom:none; }
+  .config .k{ color:var(--muted); }
+  .config .v{ color:var(--accent); text-align:right; }
+  .config .v.familiar{ color:var(--amber); }
+
+  /* projects */
+  .projects{
+    display:grid;
+    gap:18px;
+  }
+  .project{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:24px;
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .project:hover{ border-color:var(--accent-dim); transform:translateY(-2px); }
+  .project-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    margin-bottom:10px;
+  }
+  .project h3{
+    font-size:18px;
+    font-weight:700;
+  }
+  .status{
+    font-family:var(--mono);
+    font-size:11px;
+    padding:3px 8px;
+    border-radius:20px;
+    white-space:nowrap;
+    border:1px solid;
+  }
+  .status.ok{ color:var(--accent); border-color:var(--accent-dim); background:rgba(79,209,197,0.06); }
+  .project p{ color:var(--muted); font-size:14.5px; margin-bottom:14px; }
+  .stack{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .stack span{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:#9FB0BA;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    padding:4px 9px;
+    border-radius:5px;
+  }
+  .project-link{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--accent);
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  .project-link:hover{ text-decoration:underline; }
+
+  /* experience as log */
+  .log{
+    display:flex;
+    flex-direction:column;
+  }
+  .log-entry{
+    display:grid;
+    grid-template-columns:96px 1fr;
+    gap:20px;
+    padding:22px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .log-entry:last-child{ border-bottom:none; }
+  .log-code{
+    font-family:var(--mono);
+    font-size:13px;
+    font-weight:700;
+    padding-top:2px;
+  }
+  .log-code.live{ color:var(--accent); }
+  .log-code.done{ color:var(--muted); }
+  .log-code .sub{
+    display:block;
+    font-weight:400;
+    color:var(--muted);
+    font-size:10.5px;
+    margin-top:3px;
+  }
+  .log-role{ font-size:16px; font-weight:700; margin-bottom:2px; }
+  .log-meta{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:10px;
+  }
+  .log-desc{ color:#B8C4CC; font-size:14.5px; }
+  .log-desc ul{ padding-left:18px; margin-top:6px; }
+  .log-desc li{ margin-bottom:4px; }
+
+  /* education timeline */
+  .edu{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .edu-item{
+    display:grid;
+    grid-template-columns:150px 1fr;
+    gap:20px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .edu-item:last-child{ border-bottom:none; }
+  .edu-period{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--muted);
+    padding-top:2px;
+  }
+  .edu-name{ font-weight:700; font-size:15px; margin-bottom:2px; }
+  .edu-detail{ color:var(--muted); font-size:13.5px; }
+  .edu-score{ color:var(--amber); font-family:var(--mono); font-size:12.5px; }
+
+  /* additional info */
+  .grid2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+  }
+  .info-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px;
+  }
+  .info-card h4{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    margin-bottom:12px;
+  }
+  .lang-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:14px;
+    padding:6px 0;
+  }
+  .lang-row .level{ color:var(--accent); font-family:var(--mono); font-size:12px; }
+
+  /* footer / contact */
+  footer{
+    padding:70px 0 60px;
+    border-top:1px solid var(--line);
+    text-align:center;
+    position:relative;
+    z-index:1;
+  }
+  footer .sec-title{ margin-bottom:14px; }
+  footer p{ color:var(--muted); max-width:440px; margin:0 auto 26px; font-size:15px; }
+  .footer-links{
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-bottom:40px;
+  }
+  .footer-bottom{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--muted);
+  }
+  .footer-bottom .accent{ color:var(--accent); }
+
+  @media (max-width:640px){
+    .nav-links{ display:none; }
+    .sec-title{ font-size:21px; }
+    .grid2{ grid-template-columns:1fr; }
+    .log-entry, .edu-item{ grid-template-columns:1fr; gap:6px; }
+    .term-body{ font-size:12.5px; }
+    pre.json{ font-size:12px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<nav>
+  <div class="wrap">
+    <div class="nav-brand">chirag<span>.surti</span></div>
+    <div class="nav-links">
+      <a href="#about">about</a>
+      <a href="#skills">skills</a>
+      <a href="#projects">projects</a>
+      <a href="#experience">experience</a>
+      <a href="#education">education</a>
+      <a href="#contact">contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span>currently interning at We3vision Private Limited</div>
+    <div class="terminal">
+      <div class="term-bar">
+        <span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span>
+        <span class="term-title">chirag-surti — profile.json</span>
+      </div>
+      <div class="term-body">
+        <div class="req"><span class="method">GET</span> /api/v1/developer/chirag-surti &nbsp;→&nbsp; 200 OK</div>
+        <pre class="json"><span class="punc">{</span>
+  <span class="key">"name"</span><span class="punc">:</span> <span class="str">"Chirag Surti"</span><span class="punc">,</span>
+  <span class="key">"role"</span><span class="punc">:</span> <span class="str">"Backend Developer"</span><span class="punc">,</span>
+  <span class="key">"stack"</span><span class="punc">:</span> <span class="punc">[</span><span class="str">"Python"</span><span class="punc">,</span> <span class="str">"Django"</span><span class="punc">,</span> <span class="str">"Node.js"</span><span class="punc">]</span><span class="punc">,</span>
+  <span class="key">"based_in"</span><span class="punc">:</span> <span class="str">"Surat, Gujarat, IN"</span><span class="punc">,</span>
+  <span class="key">"open_to"</span><span class="punc">:</span> <span class="str">"backend & full-stack roles"</span><span class="punc">,</span>
+  <span class="key">"uptime"</span><span class="punc">:</span> <span class="str">"builds things that don't fall over"</span><span class="punc">,</span>
+  <span class="key">"status"</span><span class="punc">:</span> <span class="str">"actively shipping"</span><cursor class="cursor"></cursor>
+<span class="punc">}</span></pre>
+      </div>
+    </div>
+    <div class="hero-cta">
+      <a class="btn primary" href="mailto:chiragsurti561300@gmail.com">Send an email</a>
+      <a class="btn" href="tel:8238898715">Call: 8238898715</a>
+      <a class="btn" href="#projects">View projects</a>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-route">GET /about</span>
+      <h2 class="sec-title">About</h2>
+    </div>
+    <p class="about-text">
+      I'm an Information Technology student at R.N.G Patel Institute of Technology, building backend
+      systems in <strong>Python</strong> and <strong>Django</strong>. My interest sits at the intersection
+      of clean API design and application security — I've spent time both building features
+      (authentication, CRUD flows, AI model integration) and breaking them (vulnerability assessment,
+      security testing), which shapes how I write backend code: functional first, defensible by default.
+    </p>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-route">GET /skills</span>
+      <h2 class="sec-title">Skills</h2>
+    </div>
+    <div class="config">
+      <div class="row"><span class="k">language</span><span class="v">Python</span></div>
+      <div class="row"><span class="k">framework</span><span class="v">Django</span></div>
+      <div class="row"><span class="k">framework.api</span><span class="v familiar">Django Rest Framework (familiar)</span></div>
+      <div class="row"><span class="k">runtime</span><span class="v">Node.js</span></div>
+      <div class="row"><span class="k">focus</span><span class="v">application security & auth</span></div>
+      <div class="row"><span class="k">certification</span><span class="v">Python Django 101</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-route">GET /projects</span>
+      <h2 class="sec-title">Projects</h2>
+    </div>
+    <div class="projects">
+      <div class="project">
+        <div class="project-top">
+          <h3>Food World</h3>
+          <span class="status ok">deployed</span>
+        </div>
+        <p>A recipe-sharing website with full user authentication and CRUD — login, logout, add,
+          view, update, and delete recipes.</p>
+        <div class="stack">
+          <span>Django</span><span>Django Template Language</span><span>Bootstrap</span><span>Supabase</span>
+        </div>
+        <a class="project-link" href="#" target="_blank" rel="noopener">→ View on GitHub</a>
+      </div>
+
+      <div class="project">
+        <div class="project-top">
+          <h3>Finance Tracker</h3>
+          <span class="status ok">deployed</span>
+        </div>
+        <p>A personal finance tracker for logging income and expenses, with authenticated access
+          to add and view transactions.</p>
+        <div class="stack">
+          <span>Django</span><span>Django Template Language</span><span>MySQL</span>
+        </div>
+        <a class="project-link" href="#" target="_blank" rel="noopener">→ View on GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-route">GET /experience</span>
+      <h2 class="sec-title">Experience</h2>
+    </div>
+    <div class="log">
+      <div class="log-entry">
+        <div class="log-code live">200 OK<span class="sub">active</span></div>
+        <div>
+          <div class="log-role">Backend Developer Intern</div>
+          <div class="log-meta">We3vision Private Limited — Surat (On-site) · May 2026 – Present</div>
+          <div class="log-desc">
+            Learning and implementing authentication systems, AI model integration, testing,
+            API development, and application deployment.
+          </div>
+        </div>
+      </div>
+
+      <div class="log-entry">
+        <div class="log-code done">410 Gone<span class="sub">completed</span></div>
+        <div>
+          <div class="log-role">Security Engineer Intern</div>
+          <div class="log-meta">We3vision Private Limited — Surat (On-site) · Jan 2026 – May 2026</div>
+          <div class="log-desc">
+            <ul>
+              <li>Worked on web application security, vulnerability assessment, and security best practices</li>
+              <li>Performed security testing and analyzed vulnerabilities</li>
+              <li>Gained hands-on experience with authentication and chat security</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-route">GET /education</span>
+      <h2 class="sec-title">Education</h2>
+    </div>
+    <div class="edu">
+      <div class="edu-item">
+        <div class="edu-period">Jun 2022 – May 2026</div>
+        <div>
+          <div class="edu-name">R.N.G Patel Institute Of Technology</div>
+          <div class="edu-detail">Bachelor of Engineering in Information Technology</div>
+          <div class="edu-score">Current CGPA: 7.43</div>
+        </div>
+      </div>
+      <div class="edu-item">
+        <div class="edu-period">Jun 2021 – Feb 2022</div>
+        <div>
+          <div class="edu-name">Vidiyakunj English Medium High School</div>
+          <div class="edu-detail">H.S.C</div>
+          <div class="edu-score">53.8%</div>
+        </div>
+      </div>
+      <div class="edu-item">
+        <div class="edu-period">Jun 2019 – Feb 2020</div>
+        <div>
+          <div class="edu-name">Aman English Medium School</div>
+          <div class="edu-detail">S.S.C</div>
+          <div class="edu-score">66.5%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:26px;">
+      <div class="info-card">
+        <h4>Languages</h4>
+        <div class="lang-row"><span>Gujarati</span><span class="level">fluent</span></div>
+        <div class="lang-row"><span>Hindi</span><span class="level">intermediate</span></div>
+        <div class="lang-row"><span>English</span><span class="level">beginner</span></div>
+      </div>
+      <div class="info-card">
+        <h4>Extracurricular</h4>
+        <div class="lang-row"><span>Paper presentation</span><span class="level">Visvesmruti 2k23</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <span class="sec-route" style="margin-bottom:14px; display:inline-block;">POST /contact</span>
+    <h2 class="sec-title">Let's build something</h2>
+    <p>Open to backend and full-stack opportunities. The fastest way to reach me is email or phone.</p>
+    <div class="footer-links">
+      <a class="btn primary" href="mailto:chiragsurti561300@gmail.com">chiragsurti561300@gmail.com</a>
+      <a class="btn" href="tel:8238898715">8238898715</a>
+      <a class="btn" href="#" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn" href="#" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="footer-bottom">Surat, Gujarat, IN · response time <span class="accent">~24hrs</span></div>
+  </div>
+</footer>
+
+</body>
+</html>
